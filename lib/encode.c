@@ -29,8 +29,10 @@ th_finish(TAR *t)
 {
 	int i, sum = 0;
 
-	if (t->options & TAR_GNU)
-		strncpy(t->th_buf.magic, "ustar  ", 8);
+	if (t->options & TAR_GNU) {
+        strncpy(t->th_buf.magic, "ustar ", 6);
+        strncpy(t->th_buf.version, " ", 2);
+    }
 	else
 	{
 		strncpy(t->th_buf.version, TVERSION, TVERSLEN);
@@ -122,6 +124,16 @@ th_set_link(TAR *t, char *linkname)
 
 	if (strlen(linkname) > T_NAMELEN && (t->options & TAR_GNU))
 	{
+	    /*
+	     *  MEMORY LEAK FIXED:
+	     *  There would be a memory leak in gnu_longlink if we use set_link for two times consecutively and both times we have a GNU longlink
+	     *  Need to free the previous one before duplicating a new one
+	     *  The last copy of the gnu_longlink will be freed at tar_close
+	     */
+	    if (t->th_buf.gnu_longlink) {
+	        free(t->th_buf.gnu_longlink);   // free previous link before duplicating a new one
+	    }
+
 		/* GNU longlink format */
 		t->th_buf.gnu_longlink = strdup(linkname);
 		strcpy(t->th_buf.linkname, "././@LongLink");
@@ -133,7 +145,7 @@ th_set_link(TAR *t, char *linkname)
 			sizeof(t->th_buf.linkname));
 		if (t->th_buf.gnu_longlink != NULL)
 			free(t->th_buf.gnu_longlink);
-		t->th_buf.gnu_longlink = NULL;
+		t->th_buf.gnu_longlink = NULL;          // reset this to NULL to notify th_write we are not using long link
 	}
 }
 

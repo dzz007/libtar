@@ -121,6 +121,19 @@ tar_close(TAR *t)
 		libtar_hash_free(t->h, ((t->oflags & O_ACCMODE) == O_RDONLY
 					? free
 					: (libtar_freefunc_t)tar_dev_free));
+
+	/*
+	 * MEMORY LEAK FIXED:
+	 *
+	 * Even though th_set_path and th_set_link(AFTER PATCH) free the previous pointer before allocate a new one
+	 * The last pointer never got freed, so when we are freeing t, we also need to free those.
+	 */
+
+	if (t->th_buf.gnu_longlink)
+	    free(t->th_buf.gnu_longlink);
+	if (t->th_buf.gnu_longname)
+	    free(t->th_buf.gnu_longname);
+
 	free(t);
 
 	return i;
