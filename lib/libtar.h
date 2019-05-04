@@ -19,6 +19,8 @@
 
 #include <libtar_listhash.h>
 
+#include <string.h>
+
 #ifdef __cplusplus
 extern "C"
 {
