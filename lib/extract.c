@@ -162,7 +162,8 @@ tar_extract_regfile(TAR *t, char *realname)
 	uid_t uid;
 	gid_t gid;
 	int fdout;
-	size_t i, k;
+	size_t i;
+	ssize_t k;
 	char buf[T_BLOCKSIZE];
 	char *filename;
 
@@ -224,7 +225,7 @@ tar_extract_regfile(TAR *t, char *realname)
 #endif
 
 	/* extract the file */
-	for (i = size; i > 0; i -= T_BLOCKSIZE)
+	for (i = 0;i < size; i += T_BLOCKSIZE)
 	{
 		k = tar_block_read(t, buf);
 		if (k != T_BLOCKSIZE)
@@ -236,7 +237,7 @@ tar_extract_regfile(TAR *t, char *realname)
 
 		/* write block to output file */
 		if (write(fdout, buf,
-			  ((i > T_BLOCKSIZE) ? T_BLOCKSIZE : i)) == -1)
+			  ((size - i > T_BLOCKSIZE) ? T_BLOCKSIZE : size - i)) == -1)
 			return -1;
 	}
 

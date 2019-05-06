@@ -212,7 +212,8 @@ tar_append_regfile(TAR *t, char *realname)
 {
 	char block[T_BLOCKSIZE];
 	int filefd;
-	size_t i, j;
+	size_t i;
+	ssize_t j;
 	size_t size;
 
 	filefd = open(realname, O_RDONLY);
