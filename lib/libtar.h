@@ -269,14 +269,14 @@ int th_crc_calc(TAR *t);
 #define th_crc_ok(t) (th_get_crc(t) == th_crc_calc(t))
 
 /* string-octal to integer conversion */
-int oct_to_int(char *oct);
+size_t oct_to_int(char *oct);
 
 /* integer to NULL-terminated string-octal conversion */
 #define int_to_oct(num, oct, octlen) \
 	snprintf((oct), (octlen), "%*lo ", (octlen) - 2, (unsigned long)(num))
 
 /* integer to string-octal conversion, no NULL */
-void int_to_oct_nonull(int num, char *oct, size_t octlen);
+void int_to_oct_nonull(size_t num, char *oct, size_t octlen);
 
 
 /***** wrapper.c **********************************************************/

@@ -128,12 +128,12 @@ th_crc_calc(TAR *t)
 
 
 /* string-octal to integer conversion */
-int
+size_t
 oct_to_int(char *oct)
 {
-	int i;
+	size_t i;
 
-	sscanf(oct, "%o", &i);
+	sscanf(oct, "%lo", &i);
 
 	return i;
 }
@@ -141,7 +141,7 @@ oct_to_int(char *oct)
 
 /* integer to string-octal conversion, no NULL */
 void
-int_to_oct_nonull(int num, char *oct, size_t octlen)
+int_to_oct_nonull(size_t num, char *oct, size_t octlen)
 {
 	snprintf(oct, octlen, "%*lo", octlen - 1, (unsigned long)num);
 	oct[octlen - 1] = ' ';

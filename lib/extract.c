@@ -162,7 +162,7 @@ tar_extract_regfile(TAR *t, char *realname)
 	uid_t uid;
 	gid_t gid;
 	int fdout;
-	int i, k;
+	size_t i, k;
 	char buf[T_BLOCKSIZE];
 	char *filename;
 
